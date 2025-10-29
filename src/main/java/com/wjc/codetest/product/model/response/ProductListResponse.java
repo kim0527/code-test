@@ -14,6 +14,10 @@ import java.util.List;
  * @author : 변영우 byw1666@wjcompass.com
  * @since : 2025-10-27
  */
+
+/*
+ * CreateProductRequest에 작성한 코드 리뷰와 동일합니다.
+ */
 @Getter
 @Setter
 public class ProductListResponse {
