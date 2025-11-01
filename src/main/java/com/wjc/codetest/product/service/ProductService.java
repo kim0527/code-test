@@ -80,13 +80,22 @@ public class ProductService {
         product.setName(dto.getName());
         Product updatedProduct = productRepository.save(product);
         return updatedProduct;
-
     }
 
+    /* 문제 : Controller단에서의 Page 인터페이스 사용
+     * 원인 :
+     * 개선안 :
+     *         별도의 DTO 선안하기
+     *         Page의 import문(org.springframework.data.domain.Page)을 살펴보면, data, 즉 Repository, persistence 단의 인터페이스임을 알 수 있습니다.
+     *         해당 객체를 Controller 단에서 사용하게 되면, MVC(controller-service-domain-repository), 즉 계층 간의 경계가 모호해 집니다.
+     *
+     *         그래서 productService.getListByCategory(dto)의 반환 값를 위핸 별도의 DTO를 정의할 것을 권장드립니다.
+     */
     public void deleteById(Long productId) {
         Product product = getProductById(productId);
         productRepository.delete(product);
     }
+
 
     public Page<Product> getListByCategory(GetProductListRequest dto) {
         PageRequest pageRequest = PageRequest.of(dto.getPage(), dto.getSize(), Sort.by(Sort.Direction.ASC, "category"));

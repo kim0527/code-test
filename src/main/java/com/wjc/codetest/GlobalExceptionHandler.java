@@ -9,16 +9,16 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 /*
- * 문제 : Global이라는 이름과는 거리가 먼 Handler 정의
+ * 문제 : Global이라는 이름과 달리 특정 컨틀롤러의 예외만을 다루고 있습니다.
  * 원인 :
  * 개선안 :
- *         ControllerAdvice에 존재하는 특정 컨트롤러 지정(value) 제거
+ *         ControllerAdvice에 존재하는 특정 컨트롤러 지정(value)을 제거할 것을 권장드립니다.
  *
  *
- * 문제 : Handle하려는 에러가 추가될 떄마다, @ResponseBody 반복 코드를 추가하게 됩니다.
- * 원인 : @ExceptionHandler가 추가될때마다, @ResponseBody를 추가해줘야 해기 때문에
+ * 문제 : @ResponseBody가 최상단이 아닌 handler 하려는 예외마다 존재합니다.
+ * 원인 : handle하려는 에러가 추가될 떄마다, @ResponseBody를 중복적으로 작성해야 하는 구조로 설계 되어있어, 추후에 코드의 가독성을 떨어트릴 수 있습니다.
  * 개선안 :
- *         최상단에 @RestControllerAdvice 정의하기
+ *         최상단에 @ResponseBody로 설정 혹은 @RestControllerAdvice 정의를 권장드립니다.
  *         [@RestControllerAdvice 내부 코드]
  *          @Target({ElementType.TYPE})
  *          @Retention(RetentionPolicy.RUNTIME)
@@ -31,10 +31,10 @@ import org.springframework.web.bind.annotation.ResponseStatus;
  *         최상단에 @RestControllerAdvice를 사용한다면 반복적인 @ResponseBody 사용을 방지할 수 있습니다.
  *
  *
- * 문제 : 중복된 Response Status 정의
- * 원인 :
+ * 문제 : @ResponseStatus(value = HttpStatus.INTERNAL_SERVER_ERROR)와 ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)가 동시에 사용되고 있습니다.
+ * 원인 : 동일한 동작을 하는 로직이 중복으로 선언되어있어, 코드의 가독성을 떨어트릴 수 있습니다.
  * 개선안 :
- *          @ResponseStatus 혹은 ResponseEntity.status()에서 Status 정의 둘 중 한가지만 하기
+ *          @ResponseStatus 제거 혹은 ResponseEntity.status() 제거를 권장드립니다.
  *
  *
  * + 시스템 전역 에러 코드 정의 하기
