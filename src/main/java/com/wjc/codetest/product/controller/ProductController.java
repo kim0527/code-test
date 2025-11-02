@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 /*
- * 문제 : 요청 url에 Request의 리소스, 행위 정보가 모두 포함되어있습니다.
+ * 문제 : 요청 url에 Request의 리소스, 행위 정보가 모두 포함되어 있습니다.
  *       예시) /get/product/by/{productId}, /create/product, /delete/product/{productId}
  * 원인 :
  *       REST는 HTTP 프로토콜을 활용하여 통신할때 적용되는 통신 규약(규칙)으로, 리소스 중심의 API 설계하는 것이 특징입니다.
@@ -44,15 +44,15 @@ import java.util.List;
  *             @RequestMapping("/products")
  *
  *
- * 문제 : 컨트롤러에서 Boolean, List<String> 반환을 반환하고 있습니다.
+ * 문제 : 컨트롤러에서 Boolean, List<String>를 반환하고 있습니다.
  *       ( 대상 메서드 : deleteProduct(), getProductListByCategory() )
  * 원인 :
  *       코드 작성의 편리함은 있지만 박스 타입, 컬렉션 타입 반환시, 2가지 단점이 있습니다.
  *
  *       1. 응답의 가독성이 떨어지며, 명확한 의미 전달이 어려워집니다.
- *       Boolean의 경우 true, false로, 컬렉션 타입의 경우, 컬렉션의 원소 정보를 반환하는데,
- *       해당 value의 의미 없이 value만 반환하기 때문에, FE에서 응답 본문만으로 파악하기에는 어려움이 발생합니다.
- *       FE에 올바른 데이터를 전달하는 것이 BE의 역할이라 생각합니다.
+ *       Boolean의 경우 true, false를, 컬렉션 타입의 경우, 컬렉션의 원소 정보를 반환하는데,
+ *       해당 value가 의마하는 정보 없이 value만 반환하기 때문에, FE에서 응답 본문만으로 파악하기에는 어려움이 발생합니다.
+ *       FE에 데이터를 명확하게 전달하는 것이 BE의 역할이라 생각합니다.
  *
  *       2. API의 확장성이 떨어지게 됩니다.
  *       추후에 요청 시간, 메세지와 같은 메타데이터 추가되어야 하는 상황이라면, API 스펙 자체가 바뀌는 문제가 있습니다.
@@ -86,7 +86,7 @@ import java.util.List;
  *       [지연 로딩]
  *       많은 엔티티 설계시, N+1 문제를 방지하기 위해 FetchType.LAZY 설정을 많이 하게 됩니다.
  *       Product 객체 안에 있는 지연 로딩으로 설정되어 있는 A 엔티티가 존재한 상태에서,
- *       만약 영속성 컨텍스트 안에 A 엔티티 로드되지 않은 상태로 Product가 컨트롤러에서 반환되면, Jackson이 직렬화 하는 과정에서 LazyInitializationException가 발생합니다.
+ *       만약 영속성 컨텍스트 안에, A 엔티티가 로드되지 않은 상태로, Product가 컨트롤러에서 반환되면 Jackson이 직렬화 하는 과정에서 LazyInitializationException가 발생합니다.
  *       [순환 참조]
  *       Product 객체 안에 양방향 관계로 맺여있는 A 엔티티가 존재하는 경우, Product가 컨트롤러에서 반환되면 Jackson이 직렬화 하는 과정에서 양방향 설정되어있는 관계로 인해 무한으로 순회하게 됩니다.
  *
@@ -150,12 +150,12 @@ public class ProductController {
      * 원인 :
      *          1. 해당 API 역할과 HTTP 메서드가 매칭되지 않습니다.
      *             POST 메서드 사용는 리소스를 새로 생성하거나 상태를 변경하는 의미를 내포하고 있습니다.
-     *             반면 GET 메서드는 리소스 읽기 작업의 의미를 내포하고 있고, 멱득성을 보장하고 있어, 해당 API 역할에 의미론적으로 적합합니다.
+     *             반면 GET 메서드는 리소스 읽기 작업의 의미를 내포하고 있고, 멱등성을 보장하고 있어, 해당 API 역할에 의미론적으로 적합합니다.
      *
      * 개선안 :
      *          1. GET 메서드로 변경하고, 검색 조건은 Request Parameter로 전달하는 것을 권장합니다.
      *          조건 데이터를 RequestBody로 받기 위해 POST를 활용한 것으로 추측됩니다.
-     *          하지만 해당 API는 특정 조건으로 조회하는 로직이기 떄문에 GET 메서드가 올바릅니다.
+     *          하지만 해당 API는 특정 조건으로 조회하는 로직이기 때문에 GET 메서드가 올바릅니다.
      *          물론 과거와 달리, GET 메서드 사용시, Body를 활용하는 것이 허용되었지만, 좋은 설계와는 거리가 멀다고 생각합니다.
      *
      *          추가로 GET 메서드 사용시, 브러우자로부터 응답값 캐시 이점을 얻을 수 있습니다.

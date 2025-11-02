@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
  *
  *
  * 문제 : @ResponseBody가 최상단이 아닌 handler 하려는 예외마다 존재합니다.
- * 원인 : handle하려는 에러가 추가될 떄마다, @ResponseBody를 중복적으로 작성해야 하는 구조로 설계 되어있어, 추후에 코드의 가독성을 떨어트릴 수 있습니다.
+ * 원인 : handle하려는 에러가 추가될 때마다, @ResponseBody를 중복적으로 작성해야 하는 구조로 설계 되어있어, 추후에 코드의 가독성을 떨어트릴 수 있습니다.
  * 개선안 :
  *         최상단에 @ResponseBody로 설정 혹은 @RestControllerAdvice 정의를 권장드립니다.
  *         [@RestControllerAdvice 내부 코드]
